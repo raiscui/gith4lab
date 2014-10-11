@@ -1,7 +1,7 @@
 {
     "name": "gith4lab",
     "description": "danheberden's gith[ooks] for gitlab vision",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "author": {
         "name": "raiscui"
     },
@@ -37,7 +37,5 @@
         "post-receive"
     ],
     "readme": "danheberden's gith[ooks] for gitlab vision ",
-    "readmeFilename": "README.md",
-    "_id": "gith4lab@1.0.4",
-    "_from": "gith4lab@*"
+    "readmeFilename": "README.md"
 }
