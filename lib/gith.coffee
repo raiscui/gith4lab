@@ -96,7 +96,7 @@ Gith = (eventaur, settings) ->
 
         # make a simpler payload
         payload = gith.simplifyPayload(originalPayload)
-
+        debug 'filterSettings:',filterSettings(settings, payload)
         # bother doing anything?
         if filterSettings(settings, payload)
 
