@@ -104,9 +104,10 @@ Gith = (eventaur, settings) ->
         # make a simpler payload
         payload = gith.simplifyPayload(originalPayload)
 
+
         # bother doing anything?
         if filterSettings(settings, payload)
-
+            payload.deploy = settings.deploy
             # all the things
             gith.emit "all", payload
 
