@@ -16,6 +16,7 @@ debug = require("debug")("gith:")
 
 #
 filterSettings = (settings, payload) ->
+    debug 'settings:',settings
     return false  unless payload
     settings = settings or {}
 
@@ -24,6 +25,9 @@ filterSettings = (settings, payload) ->
 
     # check all the things
     checksPassed = true
+
+#    debug 'checksPassed 1',checksPassed
+
     [
         "repo"
         "branch"
@@ -68,15 +72,18 @@ filterSettings = (settings, payload) ->
                             payload.matches[thing] = match
                         true
             )
-
+#            debug 'passed 1',wat,payload.repo,passed
             # usr function?
             passed = wat(payload[thing], payload)  if _.isFunction(wat)
-
+#            debug 'passed 2',wat,payload.repo,passed
             # assign the final result of this 'thing' to checksPassed
+#            debug 'checksPassed 2',passed,checksPassed
             checksPassed = passed and checksPassed
+#            debug 'checksPassed 3',payload.repo,checksPassed
         return
 
-    checksPassed
+    debug checksPassed
+    return checksPassed
 
 
 # Used by exports.module.create's returned function to create
@@ -96,7 +103,7 @@ Gith = (eventaur, settings) ->
 
         # make a simpler payload
         payload = gith.simplifyPayload(originalPayload)
-        debug 'filterSettings:',filterSettings(settings, payload)
+
         # bother doing anything?
         if filterSettings(settings, payload)
 
@@ -140,6 +147,8 @@ Gith::simplifyPayload = (payload) ->
 
     # if branch wasn't found, use base_ref if available
     branch = payload.base_ref.replace(rRef, "$2")  if not branch and payload.base_ref
+    #payload.repository.owner |
+    owner =  payload.repository.url.match(/\/(\w+)\//)[1]
     simpler =
         original: payload
         files:
@@ -150,7 +159,7 @@ Gith::simplifyPayload = (payload) ->
 
         tag: tag
         branch: branch
-        repo: (if payload.repository then (if payload.repository.owner? then (payload.repository.owner.name + "/" + payload.repository.name) else(payload.repository.name + "/" + payload.repository.name) ) else null)
+        repo: (if payload.repository then (owner + "/" + payload.repository.name ) else null)
         sha: payload.after
         time: (if payload.repository then payload.repository.pushed_at else null)
         urls:
@@ -162,7 +171,7 @@ Gith::simplifyPayload = (payload) ->
 
         reset: not payload.created and payload.forced
         pusher: (if payload.pusher then payload.pusher.name else null)
-        owner: (if (payload.repository and payload.repository.owner) then payload.repository.owner.name else null)
+        owner: owner
 
     simpler.urls.branch = simpler.urls.branch + "/tree/" + branch  if branch
     simpler.urls.tag = simpler.urls.head  if tag
@@ -182,7 +191,8 @@ Gith::simplifyPayload = (payload) ->
 
         return
 
-    simpler
+    debug simpler
+    return simpler
 
 
 # todo: use github api to find what files were removed if the
